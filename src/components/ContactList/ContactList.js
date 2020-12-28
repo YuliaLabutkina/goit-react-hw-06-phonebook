@@ -1,11 +1,13 @@
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-
-import { deleteContact } from '../../redux/phonebook/phonebook-action';
+import { useSelector, useDispatch } from 'react-redux';
 import ContactListItem from './ContactListItem';
 import List from './ContactList.style';
+import { deleteContact } from '../../redux/phonebook/phonebook-action';
+import { filteredContacts } from '../../redux/phonebook/phonebook-selectors';
 
-const ContactList = ({ items, deleteContact }) => {
+const ContactList = () => {
+  const dispatch = useDispatch();
+  const items = useSelector(filteredContacts);
+
   return items && items.length > 0 ? (
     <List>
       {items.map(({ id, name, number }) => (
@@ -13,35 +15,11 @@ const ContactList = ({ items, deleteContact }) => {
           key={id}
           name={name}
           number={number}
-          deleteContact={() => deleteContact(id)}
+          deleteContact={() => dispatch(deleteContact(id))}
         />
       ))}
     </List>
   ) : null;
 };
 
-ContactList.propTypes = {
-  filterContacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    }),
-  ),
-  deleteContact: PropTypes.func.isRequired,
-};
-
-const filterByName = (items, currentFilter) => {
-  const searchName = currentFilter.toLowerCase();
-  return items.filter(({ name }) => name.toLowerCase().includes(searchName));
-};
-
-const mapStateToProps = ({ contacts: { items, filter } }) => ({
-  items: filterByName(items, filter),
-});
-
-const mapDispatchToProps = dispatch => ({
-  deleteContact: contactId => dispatch(deleteContact(contactId)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
+export default ContactList;

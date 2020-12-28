@@ -3,6 +3,7 @@ import styled from 'styled-components';
 const ListItem = styled.li`
   padding-left: 16px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
 `;

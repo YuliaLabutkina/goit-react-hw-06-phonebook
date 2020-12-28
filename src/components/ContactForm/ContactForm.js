@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { connect } from 'react-redux';
-
+import { useSelector, useDispatch } from 'react-redux';
 import { addContact } from '../../redux/phonebook/phonebook-action';
+import { getContacts } from '../../redux/phonebook/phonebook-selectors';
 import { Form, LabelForm, InputForm, Button } from './ContactForm.style';
 
-function ContactForm({ items, onSubmit }) {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+  const items = useSelector(getContacts);
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -37,7 +39,7 @@ function ContactForm({ items, onSubmit }) {
       alert(`${name} is already in contact`);
     } else {
       const newContact = { name, number };
-      onSubmit(newContact);
+      dispatch(addContact(newContact));
     }
 
     reset();
@@ -76,14 +78,6 @@ function ContactForm({ items, onSubmit }) {
       <Button type="submit">Add contact</Button>
     </Form>
   );
-}
+};
 
-const mapStateToProps = ({ contacts }) => ({
-  items: contacts.items,
-});
-
-const mapDispatchToProps = dispatch => ({
-  onSubmit: newContact => dispatch(addContact(newContact)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);
+export default ContactForm;
